@@ -1,0 +1,8 @@
+{
+    "app":{
+        "libDirs":"./cbJars/",
+        "cfengine":"adobe@2018"
+    },
+    "cfconfigfile":"./cfconfig/myLearnConfig.json",
+    "name":"learnCFinaWeek"
+}

@@ -1,0 +1,33 @@
+body {
+font-family:Arial, Helvetica, sans-serif;
+font-size: 13px;
+line-height: 22px;
+color:#777777;
+font-weight:400;
+}
+
+
+h1,h2, h3,h4 {font-family: 'open sans', sans-serif;}
+
+h1 {font-size:55px; color:#fbfbfb; text-transform:uppercase;}
+h2 {font-size:21px; font-weight:600; color:#727272; }
+h3 {font-size:18px; font-weight:600; color:#727272; }
+h4 {font-size:18px; font-weight:600; color:#727272; }
+h5	{font-size:14px; font-weight:600; }
+h5 span {color:#727272;}
+li span {font-size:14px; font-weight:600; color:#727272; }
+
+h6  {font-family: 'open sans Light', sans-serif; 
+font-size:21px;  color:#919090; line-height:25px;}
+h6 span { color:#000000;font-family: 'open sans', sans-serif;}
+
+big { font-family:'Open Sans Light', sans-serif; font-size:45px;  text-transform:uppercase; line-height:45px;}
+big span {color:#a9a8a8;}
+
+p{
+font-family:Arial, Helvetica, sans-serif;
+text-align:justify; 
+color:#777777;
+line-height: 22px;
+text-decoration:none;
+}

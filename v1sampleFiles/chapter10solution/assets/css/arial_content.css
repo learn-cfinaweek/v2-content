@@ -1,0 +1,13 @@
+body {
+font-family:Arial, Helvetica, sans-serif;
+font-size: 13px;
+line-height: 22px;
+color:#7c7c7c;
+font-weight:400;
+}
+p{ 
+font-family:Arial, Helvetica, sans-serif;
+text-align:justify; 
+color:#7c7c7c;
+text-shadow: 0px 1px 1px #ffffff;
+line-height: 22px;}

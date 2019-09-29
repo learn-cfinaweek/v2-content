@@ -1,0 +1,216 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+
+#https://stackoverflow.com/questions/14124234/how-to-pass-parameter-on-vagrant-up-and-have-it-in-the-scope-of-vagrantfile/14124316
+require 'yaml'
+require 'getoptlong'
+
+opts = GetoptLong.new(
+  [ '--yaml_config', GetoptLong::OPTIONAL_ARGUMENT ]
+)
+
+yaml_config=''
+
+opts.each do |opt, arg|
+  case opt
+    when '--yaml_config'
+      yaml_config=arg
+  end
+end
+
+current_dir    = File.dirname(File.expand_path(__FILE__))
+configs        = YAML.load_file("#{current_dir}/#{yaml_config}.yaml")
+vagrant_config = configs['configs'][configs['configs']['use']]
+
+public_ip = configs['public_ip']
+provisioners_directory =  configs['provisioners_directory']
+vm_directory =  configs['vm_directory']
+framework_directory =  configs['framework_directory']
+pubCatalog_directory =  configs['pubCatalog_directory']
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure(2) do |config|
+ 
+ 
+    # config.vm.provision :shell do |s|
+    #     s.args = "#{customParameter}"
+    # end
+ 
+ 
+ 
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://atlas.hashicorp.com/search.
+  ###config.vm.box = "opentable/win-2012r2-standard-amd64-nocm"
+  config.vm.box = "gusztavvargadr/iis"
+  config.vm.box_version = "10.0.1811-windows-server-1607-standard"
+  #config.vm.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+  config.vbguest.auto_update = false
+
+  # Disable automatic box update checking. If you disable this, then
+  # boxes will only be checked for updates when the user runs
+  # `vagrant box outdated`. This is not recommended.
+  # config.vm.box_check_update = false
+
+  # Create a forwarded port mapping which allows access to a specific port
+  # within the machine from a port on the host machine. In the example below,
+  # accessing "localhost:8080" will access port 80 on the guest machine.
+  config.vm.network "forwarded_port", guest: vagrant_config['guest_port'], host: vagrant_config['host_port']
+
+  # Create a private network, which allows host-only access to the machine
+  # using a specific IP.
+  config.vm.network "private_network", ip: vagrant_config['public_ip']
+
+  # Create a public network, which generally matched to bridged network.
+  # Bridged networks make the machine appear as another physical device on
+  # your network.
+  #config.vm.network "public_network", ip: "192.168.33.10"
+
+  # Share an additional folder to the guest VM. The first argument is
+  # the path on the host to the actual folder. The second argument is
+  # the path on the guest to mount the folder. And the optional third
+  # argument is a set of non-required options.
+  # config.vm.synced_folder "../data", "/vagrant_data"
+
+   ### Sync Folders ###
+  #if #{vagrant_config['share_cwig']}
+  #  config.vm.synced_folder "#{vagrant_config['vm_directory']}/website_cwig/wwwroot", "c:/website_cwig"
+  #end
+  #if #{vagrant_config['share_ims']}
+  #  config.vm.synced_folder "#{vagrant_config['vm_directory']}/website_ims/www", "c:/website_ims"
+  #end
+  #if #{vagrant_config['share_ims_html']}
+  #  config.vm.synced_folder "#{vagrant_config['vm_directory']}/website_ims_html/wwwroot", "c:/website_ims_html"
+  #end
+  #if #{vagrant_config['share_api']}
+  #  config.vm.synced_folder "#{vagrant_config['vm_directory']}/website_api/", "c:/website_api"
+  #end
+  #if #{vagrant_config['share_dms']}
+  #  config.vm.synced_folder "#{vagrant_config['vm_directory']}/website_dms/", "c:/website_dms"
+  #end
+  #if #{vagrant_config['share_cbx']}
+  #  config.vm.synced_folder "#{vagrant_config['vm_directory']}/website_cbx/src/wwwroot", "c:/website_cbx"
+  #end
+  
+  config.vm.synced_folder "C:/inetpub/wwwroot/learnCFGit/learnCFinaWeek/v1sampleFiles", "c:/learncfinaweek"
+
+  config.vm.synced_folder "#{vagrant_config['provisioners_directory']}", "c:/provisioners"
+  config.vm.synced_folder "#{vagrant_config['pubCatalog_directory']}", "c:/pubPDFs"
+  config.vm.synced_folder "#{vagrant_config['framework_directory']}", "c:/frameworks"
+  
+  # Provider-specific configuration so you can fine-tune various
+  # backing providers for Vagrant. These expose provider-specific options.
+  # Example for VirtualBox:
+  #
+  config.vm.provider "virtualbox" do |vb|
+    #vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+  #   # Display the VirtualBox GUI when booting the machine
+     vb.gui = true
+  #
+  #   # Customize the amount of memory on the VM:
+     vb.memory = "4012"
+   end
+  #
+
+  ########################## Provisioners #########################################
+   #check/create temp folder
+   config.vm.provision :shell, path: "#{vagrant_config['provisioners_directory']}/Windows_Networking/create_temp.ps1"
+
+  # install cf
+  # NOTE: The decision and subsequent install of CF has to be in a cmd instead of ps1 because vagrant seems to spin ps1
+  # in it's own thread it takes to so long for cf to install the remaining steps that needs CF to be in place will fail. 
+  # for now we do it this way until i can verify why vagrant wont wait for cf ps1.
+  config.vm.provision :shell, path: "#{vagrant_config['provisioners_directory']}/ColdFusion/install_cf_2018.cmd"
+  # must stop cf so we can swap lib and setting files later 
+  config.vm.provision :shell, path: "#{vagrant_config['provisioners_directory']}/ColdFusion/cf_stop.ps1"
+
+  ########config.vm.provision :shell, path: "#{vagrant_config['provisioners_directory']}/service.ps1"
+
+  ### Create Shares ###
+  # set up the symlink and share so IIS can call the web directory on the host machiney
+  if #{vagrant_config['share_api']}
+    config.vm.provision :shell, path: "#{vagrant_config['provisioners_directory']}/Windows_Networking/create_website_api_Sym_Share.ps1"
+  end
+  if #{vagrant_config['share_cwig']}
+    config.vm.provision :shell, path: "#{vagrant_config['provisioners_directory']}/Windows_Networking/create_website_cwig_Sym_Share.ps1"
+  end
+  if #{vagrant_config['share_dms']}
+    config.vm.provision :shell, path: "#{vagrant_config['provisioners_directory']}/Windows_Networking/create_website_dms_Sym_Share.ps1"
+  end
+  if #{vagrant_config['share_cbx']}
+    config.vm.provision :shell, path: "#{vagrant_config['provisioners_directory']}/Windows_Networking/create_website_cbx_Sym_Share.ps1"
+  end
+  if #{vagrant_config['share_ims']}
+    config.vm.provision :shell, path: "#{vagrant_config['provisioners_directory']}/Windows_Networking/create_website_ims_Sym_Share.ps1"
+  end
+  if #{vagrant_config['share_ims_html']}
+    config.vm.provision :shell, path: "#{vagrant_config['provisioners_directory']}/Windows_Networking/create_website_ims_html_Sym_Share.ps1"
+  end
+  # set up the symlink and share so IIS can call the web directory on the host machiney
+  config.vm.provision :shell, path: "#{vagrant_config['provisioners_directory']}/Windows_Networking/create_provisioners_Sym_Share.ps1"
+
+  ### install URL rewrite ###
+  config.vm.provision :shell, path: "#{vagrant_config['provisioners_directory']}/IIS/install_url_rewrite.ps1"
+
+  #delete the default website because it interferes with porst for the project website
+  config.vm.provision :shell, path: "#{vagrant_config['provisioners_directory']}/IIS/delete-default-iis-website.ps1"
+  #create project website
+  if #{vagrant_config['share_cwig']}
+    config.vm.provision :shell, path: "#{vagrant_config['provisioners_directory']}/IIS/creating-website-cwig-in-iis.ps1", :args => ["#{vagrant_config['cwig_env_folder']}"]
+  end
+  if #{vagrant_config['share_ims']}
+    config.vm.provision :shell, path: "#{vagrant_config['provisioners_directory']}/IIS/creating-website-ims-in-iis.ps1", :args => ["#{vagrant_config['ims_flex_env_folder']}"]
+  end
+  if #{vagrant_config['share_ims_html']}
+    config.vm.provision :shell, path: "#{vagrant_config['provisioners_directory']}/IIS/creating-website-ims-html-in-iis.ps1", :args => ["#{vagrant_config['ims_html_env_folder']}"]
+  end
+  if #{vagrant_config['share_api']}
+    config.vm.provision :shell, path: "#{vagrant_config['provisioners_directory']}/IIS/creating-website-api-in-iis.ps1", :args => ["#{vagrant_config['api_env_folder']}"]
+  end
+  if #{vagrant_config['share_dms']}
+    config.vm.provision :shell, path: "#{vagrant_config['provisioners_directory']}/IIS/creating-website-dms-in-iis.ps1", :args => ["#{vagrant_config['dms_env_folder']}"]
+  end
+  if #{vagrant_config['share_cbx']}
+    config.vm.provision :shell, path: "#{vagrant_config['provisioners_directory']}/IIS/creating-website-cbx-in-iis.ps1", :args => ["#{vagrant_config['cbx_env_folder']}"]
+  end
+  # now that all the sites are set up, connect cf to them
+  config.vm.provision :shell, path: "#{vagrant_config['provisioners_directory']}/ColdFusion/install_CF_2018_WebConnector.ps1"
+
+  # update Maria DB drive
+  config.vm.provision :shell, path: "#{vagrant_config['provisioners_directory']}/MariaDB/update_MariaDB_Driver.cmd"
+
+  # update host file
+  config.vm.provision :shell, path: "#{vagrant_config['provisioners_directory']}/IIS/update_hosts.cmd"
+
+  # update basis driver
+  config.vm.provision :shell, path: "#{vagrant_config['provisioners_directory']}/LiveLink/update_LLDriver.cmd"
+
+  # update basis driver
+  config.vm.provision :shell, path: "#{vagrant_config['provisioners_directory']}/ColdFusion/setup_cf_settings.ps1"
+  config.vm.provision :shell, path: "#{vagrant_config['provisioners_directory']}/ColdFusion/cf_start.ps1"
+
+  # View the documentation for the provider you are using for more
+  # information on available options.
+
+  # Define a Vagrant Push strategy for pushing to Atlas. Other push strategies
+  # such as FTP and Heroku are also available. See the documentation at
+  # https://docs.vagrantup.com/v2/push/atlas.html for more information.
+  # config.push.define "atlas" do |push|
+  #   push.app = "YOUR_ATLAS_USERNAME/YOUR_APPLICATION_NAME"
+  # end
+
+  # Enable provisioning with a shell script. Additional provisioners such as
+  # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
+  # documentation for more information about their specific syntax and use.
+  # config.vm.provision "shell", inline: <<-SHELL
+  #   sudo apt-get update
+  #   sudo apt-get install -y apache2
+  # SHELL
+end

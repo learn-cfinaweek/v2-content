@@ -1,0 +1,23 @@
+---
+configs:
+    use: 'dan'
+    dan:
+        public_ip: '192.168.33.12'
+        provisioners_directory: 'C:\inetpub\wwwroot\provisioners'
+        vm_directory: 'C:\inetpub\wwwroot\learnCFGit\learnCFinaWeek\v1sampleFiles'
+        framework_directory: 'C:\inetpub\wwwroot\\frameworks'
+        pubCatalog_directory: 'C:\inetpub\wwwroot\\pubPDFs'
+        cwig_env_folder: 'dan'
+        cbx_env_folder: 'dan'
+        dms_env_folder: 'dan'
+        api_env_folder: 'dan'
+        ims_flex_env_folder: 'dan'
+        ims_html_env_folder: 'dan'
+        guest_port: 80
+        host_port: 8080
+        share_ims: true
+        share_ims_html: true
+        share_cwig: true
+        share_dms: true
+        share_api: true
+        share_cbx: true
