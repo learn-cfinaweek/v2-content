@@ -4,5 +4,5 @@
         "cfengine":"adobe@2018"
     },
     "cfconfigfile":"./cfconfig/myLearnConfig.json",
-    "name":"learnCFinaWeek"
+    "name":"learnCFinaWeekTutorial"
 }
