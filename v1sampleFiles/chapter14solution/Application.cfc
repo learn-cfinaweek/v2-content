@@ -34,7 +34,7 @@
 		var errorEmail = new mail();
 		errorEmail.setTo('you@domain.com');
 		errorEmail.setFrom('system@domain.com');
-		errorEmail.setSubject('An Error has Occured');
+		errorEmail.setSubject('An Error has Occurred');
 		errorEmail.setBody('
 			Message: #arguments.exception.message# <br />
 			Details: #arguments.exception.detail# <br />

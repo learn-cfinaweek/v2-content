@@ -20,7 +20,7 @@ In this hands on, you are going to add an Error Handling solution to the web sit
     var errorEmail = new mail();
     errorEmail.setTo( 'you@domain.com' );
     errorEmail.setFrom( 'system@domain.com' );
-    errorEmail.setSubject( 'An Error has Occured' );
+    errorEmail.setSubject( 'An Error has Occurred' );
     errorEmail.setBody('
         Message: #arguments.exception.message# <br>
         Details: #arguments.exception.detail# <br>
@@ -38,7 +38,7 @@ In this hands on, you are going to add an Error Handling solution to the web sit
         var errorEmail = new mail();
         errorEmail.setTo( 'you@domain.com' );
         errorEmail.setFrom( 'system@domain.com' );
-        errorEmail.setSubject( 'An Error has Occured' );
+        errorEmail.setSubject( 'An Error has Occurred' );
         errorEmail.setBody('
             Message: #arguments.exception.message# <br>
             Details: #arguments.exception.detail# <br>

@@ -71,7 +71,7 @@ In this hands on, we are going to import and export data into the blog section u
 1. Open up the `/www/admin/content/blog/exportBlog.cfm` file in your code editor.
 1. For this task, you are going to write some of it in *cfscript*, so you will need to create a new `<cfscript>` block.
 1. Inside the `<cfscript>`, create a variable called `blogPosts` that contains all the `blogPost` entities. You can do this by calling `EntityLoad('blogPost')`.
-1. On the next line, create a new spreadsheet called `exportSpreadhseet` by calling the `SpreadsheetNew` function and pass it in a string of 'Blog Posts'. This will name our first sheet Blog Posts. Your code should look similar to this:
+1. On the next line, create a new spreadsheet called `exportSpreadsheet` by calling the `SpreadsheetNew` function and pass it in a string of 'Blog Posts'. This will name our first sheet Blog Posts. Your code should look similar to this:
 
     ```cfml
     <cfscript>
@@ -80,7 +80,7 @@ In this hands on, we are going to import and export data into the blog section u
     </cfscript>
     ```
 
-1. Once you have the spreadsheet object created, add a heading row. To do this, call the `SpreadsheetAddRow` function and pass it in the `exportSpreadhseet` object with a comma delimited string of the column headings you want. For this example, the code will look similar to:
+1. Once you have the spreadsheet object created, add a heading row. To do this, call the `SpreadsheetAddRow` function and pass it in the `exportSpreadsheet` object with a comma delimited string of the column headings you want. For this example, the code will look similar to:
 
     ```cfml
     SpreadsheetAddRow( exportSpreadsheet, 'ID,Title,Summary,Body,Date Posted' );

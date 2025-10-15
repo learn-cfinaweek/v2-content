@@ -104,7 +104,7 @@
 			<cfif errorBean.hasErrors()>
 			    <div class="alert alert-error">
 			    	<strong>Error</strong><br />
-					The following errors occured:
+					The following errors occurred:
 					<ul>
 						<cfloop array="#errorBean.getErrors()#" index="error">
 							<li>#error.message#</li>

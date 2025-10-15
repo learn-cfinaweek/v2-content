@@ -118,7 +118,7 @@ In this hands on, we are going to add categories to blog posts. The logic for th
 
 1. Open up the `/www/admin/content/blog/listblogposts.cfm` page in your browser and append the `?reload=1` value to the URL.
 1. Click on the blog post and notice that the category is now checked.
-1. If you were to click 'save' again, your blog post would end up with duplicate categories associated to it. If you were to uncheck a category and click 'save' teh category woudl not be removed from the blog post.This is because we have added logic to add categories, but we have not check if they are already associated or if they need removing. The easiest way to solve this is to remove all categories from the blog post when editing, then re-add the new categories. To do this, open up the `/www/admin/content/blog/editBlogPost.cfm` file in your code editor.
+1. If you were to click 'save' again, your blog post would end up with duplicate categories associated to it. If you were to uncheck a category and click 'save' teh category would not be removed from the blog post.This is because we have added logic to add categories, but we have not check if they are already associated or if they need removing. The easiest way to solve this is to remove all categories from the blog post when editing, then re-add the new categories. To do this, open up the `/www/admin/content/blog/editBlogPost.cfm` file in your code editor.
 1. Find the `Edit Entity` comment tag and go to the last `<cfset>` tag. After the `<cfset>` tag, create a `<cfloop>` tag with the following attributes:
     * **array**: #blogPost.getCategories()#
     * **index**: category

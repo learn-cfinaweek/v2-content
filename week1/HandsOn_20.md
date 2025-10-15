@@ -33,7 +33,7 @@ In this hands on example, you are going to update the front end of the web site 
 1. The final step is to output the number of comments that the blog post contains. To do this, call the `getComments()` function on the `blogPost` object and use the `arrayLen` function to count how many entries were returned by replacing the number '12' with the following code:
 
     ```cfml
-    #arrayLen( blogPost.getComents() )#
+    #arrayLen( blogPost.getComments() )#
     ```
 
 1. Go to the `/www/blog.cfm` page in your browser and confirm that you now see all your blog posts listing on the page.
@@ -78,7 +78,7 @@ In this hands on example, you are going to update the front end of the web site 
     ```
 
 1. Now, loop over the comments and output them. To do this, use a `<cfloop>` tag. Just after the HTML comment tag, `Start Comment`, create a `<cfloop>` tag with the following attributes:
-    * **array**: #blogPost.getComents()#
+    * **array**: #blogPost.getComments()#
     * **index**: comment
 1. Place a closing `</cfloop>` tag before the HTML comment tag, `End Comment` and remove the other `<li>` tag.
 1. The comment object will now be available in the comment variable. Replace the date with the following code:
@@ -109,7 +109,7 @@ In this hands on example, you are going to update the front end of the web site 
 
     ```cfml
     <ul>
-        <cfloop array="#blogPost.getComents()#" index="comment">
+        <cfloop array="#blogPost.getComments()#" index="comment">
         <li>
             <p>
                 Posted On: #dateFormat( comment.createdDateTime, 'mm/dd/yyyy' )# at #timeformat( comment.createdDateTime, 'short' )# By #comment.author#
