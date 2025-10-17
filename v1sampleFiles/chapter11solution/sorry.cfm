@@ -2,5 +2,5 @@
 	Sorry
 </h1>
 <p>
-	A problem has occured. Our developers have been notified.
+	A problem has occurred. Our developers have been notified.
 </p>
